@@ -104,7 +104,7 @@ New-Check $BASELINE 'User Account Control (UAC) enabled' {
 #   Tip: (net accounts) returns lines of text. Find the line containing
 #   'Minimum password length' and read the number at the end of it.
 New-Check $BASELINE 'Minimum password length 14 or more' {
-    $c = [int]((net accounts | Select-String "Minimum password length").Length -replace '\D')
+    $c = [int]((net accounts | Select-String "Minimum password length").Line -replace '\D')
     @{ Pass = ($c -ge 14); Detail = "Minimum password length=$c" }
 } {
     net accounts /minpwlen:14
