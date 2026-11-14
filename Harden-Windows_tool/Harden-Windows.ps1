@@ -104,10 +104,10 @@ New-Check $BASELINE 'User Account Control (UAC) enabled' {
 #   Tip: (net accounts) returns lines of text. Find the line containing
 #   'Minimum password length' and read the number at the end of it.
 New-Check $BASELINE 'Minimum password length 14 or more' {
-    $c = [int]((net accounts | Select-String "Minimum password length") -replace '\D')
+    $c = [int]((net accounts | Select-String "Minimum password length").Length -replace '\D')
     @{ Pass = ($c -ge 14); Detail = "Minimum password length=$c" }
 } {
-    net accounts/minpwlen:14
+    net accounts /minpwlen:14
 } 10
 
 # TODO 4 of 13: Lockout threshold. Use the handout Part B, Microsoft Security Baseline controls table, row "Lockout threshold 1..10".
@@ -158,7 +158,7 @@ New-Check $BASELINE 'RDP requires Network Level Authentication' {
 New-Check $ADVANCED 'Defender PUA protection on' {
     $c = [int](Get-MpPreference).PUAProtection
     @{ Pass = ($c -eq 1); Detail = "PUAProtection=$c" }
-} { Set-MpPreference PUAProtection 1
+} { Set-MpPreference -PUAProtection 1
 } 8
 
 # TODO 10 of 13: ASR rule. Use the handout Part B, Advanced controls table, row "ASR: block Office child procs".
@@ -185,7 +185,7 @@ New-Check $ADVANCED 'ASR: block Office child processes' {
 New-Check $ADVANCED 'PowerShell script block logging on' {
     $c = [int](Get-ItemProperty 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging' -Name EnableScriptBlockLogging -ErrorAction SilentlyContinue).EnableScriptBlockLogging
     @{ Pass = ($c -eq 1); Detail = "EnableScriptBlocklogging=$c" }
-} { New-Item 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging' -Force; Set-ItemProperty -Name EnableScriptBlockLogging -Value 1 -Type DWord
+} { New-Item 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging' -Force; Set-ItemProperty 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging' -Name EnableScriptBlockLogging -Value 1 -Type DWord
 } 8
 
 # TODO 12 of 13: LSA protection. Use the handout Part B, Advanced controls table, row "LSA protection (RunAsPPL)".
@@ -202,7 +202,8 @@ New-Check $ADVANCED 'BitLocker on system drive' {
      $c = (Get-BitLockerVolume -MountPoint $env:SystemDrive).ProtectionStatus
     @{ Pass = ($c -eq 'On'); Detail = "ProtectionStatus=$c" }
 } {
-} $null 6
+    $null
+}
 
 # =======================================================================
 #  Engine (done for you): audit, apply, report
