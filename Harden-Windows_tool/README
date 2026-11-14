@@ -1,1 +1,9 @@
 The PowerShell script is an auditing and hardening tool for Windows.
+
+Instructions to run:
+*Download the file
+*Open PowerShell in administrator
+*Allow local scripts to run
+*To run audit: .\Harden-Windows.ps1
+*To run apply mode: \Harden-Windows.ps1 -Mode Apply
+
